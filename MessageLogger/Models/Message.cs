@@ -9,14 +9,14 @@ namespace MessageLogger.Models
     public class Message
     {
         public int Id { get; set; }
-        public string Content { get; private set; }
-        public DateTime CreatedAt { get; private set; }
+        public string Content { get; set; }
+        public DateTime CreatedAt { get; set; }
         public User User { get; set; }
 
         public Message(string content)//remove constructor (after changes)
         {
             Content = content;
-            CreatedAt = DateTime.Now;
+            CreatedAt = DateTime.Now.ToUniversalTime();
         }
     }
 }
