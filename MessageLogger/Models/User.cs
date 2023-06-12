@@ -13,7 +13,7 @@ namespace MessageLogger.Models
         public string Username { get; private set; }
         public List<Message> Messages { get; } = new List<Message>();
 
-        public User(string name, string username)
+        public User(string name, string username)//remove constructor (after changes)
         {
             Name = name;
             Username = username;
