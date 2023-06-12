@@ -13,7 +13,7 @@ namespace MessageLogger.Models
         public DateTime CreatedAt { get; set; }
         public User User { get; set; }
 
-        public Message(string content)//remove constructor (after changes)
+        public Message(string content)
         {
             Content = content;
             CreatedAt = DateTime.Now.ToUniversalTime();

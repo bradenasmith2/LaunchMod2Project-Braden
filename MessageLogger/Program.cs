@@ -16,14 +16,6 @@ using MessageLogger.Models;
     Console.Write("Add a message (or `quit` to exit): ");
     string userInput = Console.ReadLine();//this is the input  for the initial Message.
 
-//var userMessage = new Message(userInput);
-
-//using (var context = new MessageLoggerContext())
-//{
-//    user.Messages.Add(new Message(userInput));
-//    context.SaveChanges();
-//}
-
 List<User> users = new List<User>() { user };//adding the initial user to a list of Users
 
 using (var context = new MessageLoggerContext())
@@ -34,35 +26,27 @@ using (var context = new MessageLoggerContext())
     user.Messages.Add(new Message(userInput));
     context.SaveChanges();
 }
-
     while (userInput.ToLower() != "quit")//this loop keeps the program running until it is told to quit
     {
         while (userInput.ToLower() != "log out")//this loop keeps the program running with a specific user until it is told to logout, but log out doesn't end the program
                                                 //since this loop is nested in the 'quit' loop.
         {
-
-        //userMessage = new Message(userInput);
-
-        
         foreach (var message in user.Messages)
             {
                 Console.WriteLine($"{user.Name} {message.CreatedAt:t}: {message.Content}");//prints basic information after each input.
             }
 
             Console.Write("Add a message: ");
-
+        
             userInput = Console.ReadLine();
 
-        using (var context = new MessageLoggerContext())
+        using (var context = new MessageLoggerContext())//.find on context table (PK)
         {
-
-            user.Messages.Add(new Message(userInput));
+            //pull user --> add user to <messages>
+            var DbUser = context.Users.Find(user.Id);
+            user.Messages.Add(new Message (userInput));
+            DbUser.Messages.Add(new Message(userInput));//replace c#'user' with above Db 'User'
             context.SaveChanges();
-        }
-
-        if (userInput == "quit")
-        {
-            break;
         }
             Console.WriteLine();//Continues looping to add Messages until it is told to 'log out'
         }
@@ -117,3 +101,5 @@ foreach (var u in users)
 }
 
 //SEE Data > programChanges.txt to view the changes that will be made
+
+//'log out' is being tracked in the Db. Need a .Remove from <Message>
