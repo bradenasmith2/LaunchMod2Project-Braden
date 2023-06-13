@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -37,14 +38,23 @@ namespace MessageLogger.Models
             return user;
         }
 
-        public void LogOut()
+        public User NewUser(MessageLoggerContext context)
         {
+            string name;
+            string username;
 
-        }
+            Console.WriteLine("Lets create a profile for you!\n");
+            Console.Write("What is your name? ");
+            name = Console.ReadLine();
+            Console.Write("What is your username? (one word, no spaces!) ");
+            username = Console.ReadLine();
+            var user = new User(name, username);
+            context.Users.Add(user);
+            context.SaveChanges();
+            Console.WriteLine("\nTo log out of your user profile, enter `log out`.\n");
+            Console.Write("Add a message (or `quit` to exit): ");
 
-        public void NewUser()
-        {
-
+            return user;
         }
     }
 }
