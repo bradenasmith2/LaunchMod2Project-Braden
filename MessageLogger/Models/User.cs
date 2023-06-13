@@ -18,5 +18,15 @@ namespace MessageLogger.Models
             Name = name;
             Username = username;
         }
+
+        public void LogIn()
+        {
+
+        }
+
+        public void LogOut()
+        {
+
+        }
     }
 }

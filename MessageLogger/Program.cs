@@ -1,5 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-using MessageLogger.Data;
+﻿using MessageLogger.Data;
 using MessageLogger.Models;
 
     Console.WriteLine("Welcome to Message Logger!\n");
@@ -10,13 +9,13 @@ using MessageLogger.Models;
     Console.Write("What is your username? (one word, no spaces!) ");
     string username = Console.ReadLine();
 
-    User user = new User(name, username); //initial creation of a User using UserInputs
+    User user = new User(name, username);
 
     Console.WriteLine("\nTo log out of your user profile, enter `log out`.\n");
     Console.Write("Add a message (or `quit` to exit): ");
-    string userInput = Console.ReadLine();//this is the input  for the initial Message.
+    string userInput = Console.ReadLine();
 
-List<User> users = new List<User>() { user };//adding the initial user to a list of Users
+List<User> users = new List<User>() { user };
 
 using (var context = new MessageLoggerContext())
 {
@@ -26,14 +25,13 @@ using (var context = new MessageLoggerContext())
     user.Messages.Add(new Message(userInput));
     context.SaveChanges();
 }
-    while (userInput.ToLower() != "quit")//this loop keeps the program running until it is told to quit
+    while (userInput.ToLower() != "quit")
     {
-        while (userInput.ToLower() != "log out")//this loop keeps the program running with a specific user until it is told to logout, but log out doesn't end the program
-                                                //since this loop is nested in the 'quit' loop.
+        while (userInput.ToLower() != "log out")
         {
         foreach (var message in user.Messages)
             {
-                Console.WriteLine($"{user.Name} {message.CreatedAt:t}: {message.Content}");//prints basic information after each input.
+                Console.WriteLine($"{user.Name} {message.CreatedAt:t}: {message.Content}");
             }
 
             Console.Write("Add a message: ");
@@ -42,13 +40,15 @@ using (var context = new MessageLoggerContext())
 
         using (var context = new MessageLoggerContext())//.find on context table (PK)
         {
-            //pull user --> add user to <messages>
-            var DbUser = context.Users.Find(user.Id);
-            user.Messages.Add(new Message (userInput));
-            DbUser.Messages.Add(new Message(userInput));//replace c#'user' with above Db 'User'
-            context.SaveChanges();
+            if (userInput != "quit" && userInput != "log out")//prevents these strings from being added to (OR counted) messages
+            {
+                var DbUser = context.Users.Find(user.Id);
+                user.Messages.Add(new Message(userInput));//this line only adds messages (no Id, no D.T) but this allows information to print at the end.
+                DbUser.Messages.Add(new Message(userInput));//replace c#'user' with above Db 'User'
+                context.SaveChanges();
+            }
         }
-            Console.WriteLine();//Continues looping to add Messages until it is told to 'log out'
+            Console.WriteLine();
         }
 
         Console.Write("Would you like to log in a `new` or `existing` user? Or, `quit`? ");
@@ -59,35 +59,34 @@ using (var context = new MessageLoggerContext())
             name = Console.ReadLine();
             Console.Write("What is your username? (one word, no spaces!) ");
             username = Console.ReadLine();
-            user = new User(name, username);//creating a new user
-            users.Add(user);//adding new user to the list of users that was initialized for the first User created (line 20)
+            user = new User(name, username);
+            users.Add(user);
             Console.Write("Add a message: ");
 
-            userInput = Console.ReadLine();//collects a message then loops back to the while loops to repeat all functionality.
+            userInput = Console.ReadLine();
 
         }
         else if (userInput.ToLower() == "existing")
         {
             Console.Write("What is your username? ");
             username = Console.ReadLine();
-            user = null;//forcing user to be null to ensure the next few steps function properly.
+            user = null;
             foreach (var existingUser in users)
             {
                 if (existingUser.Username == username)
                 {
-                    user = existingUser;//setting the 'exisitingUser' to 'user', which will then retrieve information from that User,
-                                        //if this line wasn't here, the 'existingUser' would be setup as a new user, and their information would not be available.
+                    user = existingUser;
                 }
             }
 
             if (user != null)
             {
-                Console.Write("Add a message: ");//adding messages if that existingUser WAS an existing user.
+                Console.Write("Add a message: ");
                 userInput = Console.ReadLine();
             }
             else
             {
-                Console.WriteLine("could not find user");//forcing the program to end if the user inputs a nonexistant username.
+                Console.WriteLine("could not find user");
                 userInput = "quit";
 
             }
@@ -97,7 +96,7 @@ using (var context = new MessageLoggerContext())
 Console.WriteLine("Thanks for using Message Logger!");
 foreach (var u in users)
 {
-    Console.WriteLine($"{u.Name} wrote {u.Messages.Count} messages.");//prints information from ALL users with a count of ALL messages for EACH user.
+    Console.WriteLine($"{u.Name} wrote {u.Messages.Count} messages.");
 }
 
 //SEE Data > programChanges.txt to view the changes that will be made

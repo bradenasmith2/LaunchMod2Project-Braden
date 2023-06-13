@@ -104,10 +104,10 @@ CHANGES IN LIST VIEW
 }
 
 * Adjust where and how Messages List and Users List get created and SaveChanges() after each
-    * Add a context.Users/Messages.AddRange({List}) in the loop (or anywhere else a property is collected)
+    * Add a context.Users/Messages.AddRange({List}) in the loop (or anywhere else a property is collected) COMPLETED
 
 * Adjust nearly all variables to align with the context variables (pull from Db NOT models).
-    * Remove constructors + replace their tests with Db-styled tests.
+    * Remove constructors + replace their tests with Db-styled tests.  DID NOT REMOVE CONS.
 
 * Adjust the 'existingUser' If() to ensure that the data is being checked against the Db
     * This can be done with a .Where() to ensure that the userInput matches an existingUser in the Db.
@@ -121,3 +121,23 @@ CHANGES IN LIST VIEW
 
 * Once these changes are implemented check to see if there is repetitive or redundant code that can be methodized.
     * if any new methods are created, add tests.
+
+
+Possible "ConfirmNoQuitNoLogOutMessage" Method?
+
+if (DbUser.Messages.Any(e => e.Content.Contains("quit") || e.Content.Contains("log out")))
+            {
+                var removeQuitCommand = DbUser.Messages.Where(e => e.Content.Contains("quit"));
+                var removeLogOutCommand = DbUser.Messages.Where(e => e.Content.Contains("log out"));
+
+                foreach (var e in removeQuitCommand)
+                {
+                    DbUser.Messages.Remove(e);
+                    context.SaveChanges();
+                }
+                foreach (var e in removeLogOutCommand)
+                {
+                    DbUser.Messages.Remove(e);
+                    context.SaveChanges();
+                }
+            }
