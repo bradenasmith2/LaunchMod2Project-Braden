@@ -1,0 +1,143 @@
+﻿// See https://aka.ms/new-console-template for more information
+using MessageLogger.Models;
+
+This all needs to be in a method that can grab Context as an argument.
+
+Console.WriteLine("Welcome to Message Logger!");            all of this should be reduced with '\n'. it is driving me crazy.
+Console.WriteLine();
+Console.WriteLine("Let's create a user pofile for you.");
+Console.Write("What is your name? ");
+string name = Console.ReadLine();
+Console.Write("What is your username? (one word, no spaces!) ");
+string username = Console.ReadLine();
+User user = new User(name, username);
+
+Console.WriteLine();
+Console.WriteLine("To log out of your user profile, enter `log out`.");
+
+Console.WriteLine();
+Console.Write("Add a message (or `quit` to exit): ");
+
+string userInput = Console.ReadLine();
+
+
+List<User> users = new List<User>() { user }; //add a context.SaveChanges()
+
+Add List<Message> Messages . add (userInput)  then add a context.SaveChanges()
+
+
+while (userInput.ToLower() != "quit")
+{
+    while (userInput.ToLower() != "log out")
+    {
+        user.Messages.Add(new Message(userInput));
+
+        foreach (var message in user.Messages)
+        {
+            Console.WriteLine($"{user.Name} {message.CreatedAt:t}: {message.Content}");     adjust to use the correct method to call these properties.
+        }
+
+        Console.Write("Add a message: ");
+
+        userInput = Console.ReadLine();
+        Console.WriteLine();
+    }
+
+    Console.Write("Would you like to log in a `new` or `existing` user? Or, `quit`? ");
+    userInput = Console.ReadLine();
+    if (userInput.ToLower() == "new")
+    {
+        Console.Write("What is your name? ");
+        name = Console.ReadLine();
+        Console.Write("What is your username? (one word, no spaces!) ");
+        username = Console.ReadLine();
+        user = new User(name, username);
+        users.Add(user);
+        Console.Write("Add a message: ");
+
+        userInput = Console.ReadLine();
+
+    }
+    else if (userInput.ToLower() == "existing")      This would need to change to verify through the DB, if existingUser == context.Users.Where "username"
+    {
+        Console.Write("What is your username? ");
+        username = Console.ReadLine();
+        user = null;
+        foreach (var existingUser in users)
+        {
+            if (existingUser.Username == username)      
+            {
+                user = existingUser;            This would be changed to LogIn()
+            }
+        }
+            
+        if (user != null)                   this could be moved into the above if(). (remove !=null)
+        {
+            Console.Write("Add a message: ");
+            userInput = Console.ReadLine();
+        }
+        else
+        {
+            Console.WriteLine("could not find user");       tabbed in to match (after changes) ^
+            userInput = "quit";
+
+        }
+    }
+
+}
+
+Console.WriteLine("Thanks for using Message Logger!");
+foreach (var u in users)    These variables will be switched to the DB variables Users and Messages
+{
+    Console.WriteLine($"{u.Name} wrote {u.Messages.Count} messages.");
+}
+
+
+
+CHANGES IN LIST VIEW
+
+* Main method to grab context
+
+    using(var context = new MessageLoggerContext())
+{
+    program things
+}
+
+* Adjust where and how Messages List and Users List get created and SaveChanges() after each
+    * Add a context.Users/Messages.AddRange({List}) in the loop (or anywhere else a property is collected) COMPLETED
+
+* Adjust nearly all variables to align with the context variables (pull from Db NOT models).
+    * Remove constructors + replace their tests with Db-styled tests.  DID NOT REMOVE CONS.
+
+* Adjust the 'existingUser' If() to ensure that the data is being checked against the Db
+    * This can be done with a .Where() to ensure that the userInput matches an existingUser in the Db.
+
+* Add LogIn() and LogOut() methods to clean up repetitive code near the end ( ~line 67)
+    * Add Tests for both methods
+
+* Clean up the final If() and Else statements to align with the changes stated above.
+
+*** Clean up Console.WriteLine() statements to include '\n\ when needed, this removes blank C.WL() lines.
+
+* Once these changes are implemented check to see if there is repetitive or redundant code that can be methodized.
+    * if any new methods are created, add tests.
+
+
+Possible "ConfirmNoQuitNoLogOutMessage" Method?
+
+if (DbUser.Messages.Any(e => e.Content.Contains("quit") || e.Content.Contains("log out")))
+            {
+                var removeQuitCommand = DbUser.Messages.Where(e => e.Content.Contains("quit"));
+                var removeLogOutCommand = DbUser.Messages.Where(e => e.Content.Contains("log out"));
+
+                foreach (var e in removeQuitCommand)
+                {
+                    DbUser.Messages.Remove(e);
+                    context.SaveChanges();
+                }
+                foreach (var e in removeLogOutCommand)
+                {
+                    DbUser.Messages.Remove(e);
+                    context.SaveChanges();
+                }
+            }
