@@ -19,9 +19,12 @@ List<User> users = new List<User>() { user };
 
 using (var context = new MessageLoggerContext())
 {
+    
     context.Users.Add(user);
     context.SaveChanges();
 
+    var DbUser = context.Users.Find(user.Id);
+    DbUser.Messages.Add(new Message(userInput));
     user.Messages.Add(new Message(userInput));
     context.SaveChanges();
 }
@@ -30,9 +33,19 @@ using (var context = new MessageLoggerContext())
         while (userInput.ToLower() != "log out")
         {
         foreach (var message in user.Messages)
-            {
-                Console.WriteLine($"{user.Name} {message.CreatedAt:t}: {message.Content}");
-            }
+        {
+            Console.WriteLine($"{user.Name} {message.CreatedAt:t}: {message.Content}");
+        }
+        //using (var context = new MessageLoggerContext())                              //"Index is out of range" on u.Messages[0]
+        //{
+
+        //    var i = 0;
+        //    foreach (var u in context.Users)
+        //    {
+        //        Console.WriteLine($"{u.Name} at {u.Messages[0].CreatedAt:t}: {u.Messages[0].Content}");
+        //        i++;
+        //    }
+        //}
 
             Console.Write("Add a message: ");
         
@@ -68,21 +81,31 @@ using (var context = new MessageLoggerContext())
         }
         else if (userInput.ToLower() == "existing")
         {
-            Console.Write("What is your username? ");
-            username = Console.ReadLine();
-            user = null;
-            foreach (var existingUser in users)
-            {
-                if (existingUser.Username == username)
-                {
-                    user = existingUser;
-                }
-            }
+        using (var context = new MessageLoggerContext())
+        {
+            user.LogIn(context, user);
+        }
+            //Console.Write("What is your username? ");
+            //username = Console.ReadLine();
+            //user = null;
+            //foreach (var existingUser in users)
+            //{
+            //    if (existingUser.Username == username)
+            //    {
+            //        user = existingUser;
+            //    }
+            //}
 
             if (user != null)
             {
                 Console.Write("Add a message: ");
                 userInput = Console.ReadLine();
+            using (var context = new MessageLoggerContext())
+            {
+                var DbUser = context.Users.Find(user.Id);
+                DbUser.Messages.Add(new Message (userInput));
+                context.SaveChanges();
+            }
             }
             else
             {
@@ -94,9 +117,17 @@ using (var context = new MessageLoggerContext())
 
     }
 Console.WriteLine("Thanks for using Message Logger!");
-foreach (var u in users)
+//foreach (var u in users)
+//{
+//        Console.WriteLine($"{u.Name} wrote {u.Messages.Count} messages.");
+//}
+
+using (var context = new MessageLoggerContext())
 {
-    Console.WriteLine($"{u.Name} wrote {u.Messages.Count} messages.");
+    foreach (var u in context.Users)
+    {
+        Console.WriteLine($"{u.Name} wrote {u.Messages.Count} messages.");
+    }
 }
 
 //SEE Data > programChanges.txt to view the changes that will be made
