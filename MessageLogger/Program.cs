@@ -135,4 +135,4 @@ using (var context = new MessageLoggerContext())
 //known bugs: if you type "commands" before selecting 'y' or 'n' for having a profile, the program ends.
     //if you type "commands" as the first message immediately after signing in to an existing account, nothing happens, you are asked again for an input.
     //common words command runs twice.
-    //upon logging in to an already created profile, your
+    //upon logging in to an already created profile, your previous messages will be displayed twice, though removing the second query.ConstantInfo() in User stops all display temporarily.

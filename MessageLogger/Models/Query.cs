@@ -46,7 +46,7 @@ namespace MessageLogger.Models
             Console.WriteLine("Thanks for using Message Logger!");
         }
 
-        public void CommonWord(MessageLoggerContext context, User user, string input)
+        public void CommonWord(MessageLoggerContext context, User user, string input)//currently works for all messages with all profiles, though specification of a user is in progress. (commented section)
         {
             var userInputSplitList = new List<string>();
             var messageList = new List<Message>();
@@ -131,7 +131,3 @@ namespace MessageLogger.Models
                 }
             }
         }
-        //public void MessageByHour()
-        //{
-
-        //}

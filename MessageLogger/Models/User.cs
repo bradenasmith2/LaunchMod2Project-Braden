@@ -31,9 +31,9 @@ namespace MessageLogger.Models
                 {
                     user = checkedUser;
                 Console.WriteLine($"Your previous messages:\n");
-                //query.ConstantInfo(context, user);
+                query.ConstantInfo(context, user);
                 //Console.WriteLine("Enter a message, or type 'log out' or 'quit': ");
-                }
+            }
                 else
                 {
                     user = null;
@@ -68,6 +68,6 @@ namespace MessageLogger.Models
                 listUsernames.Add(e.Username);
             }
             return listUsernames;
-        }
+        }//currently unused.
     }
 }
