@@ -18,5 +18,5 @@ namespace MessageLogger.Models
             Content = content;
             CreatedAt = DateTime.Now.ToUniversalTime();
         }
-    }
+}
 }

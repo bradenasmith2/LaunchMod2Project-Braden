@@ -15,13 +15,13 @@ namespace MessageLogger.Models
         public string Username { get; private set; }
         public List<Message> Messages { get; set;  } = new List<Message>();
 
-        public User(string name, string username)//remove constructor (after changes)
+        public User(string name, string username)
         {
             Name = name;
             Username = username;
         }
 
-        public User LogIn(MessageLoggerContext context, User user)
+        public User LogIn(MessageLoggerContext context, User user, Query query)
         {
             Console.WriteLine("What is your username? ");
             var usernameInput = Console.ReadLine();
@@ -30,6 +30,9 @@ namespace MessageLogger.Models
                 if (checkedUser.Username == usernameInput)
                 {
                     user = checkedUser;
+                Console.WriteLine($"Your previous messages:\n");
+                query.ConstantInfo(context, user);
+                Console.WriteLine("Enter a message, or type 'log out' or 'quit': ");
                 }
                 else
                 {
