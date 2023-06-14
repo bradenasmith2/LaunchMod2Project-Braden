@@ -46,18 +46,14 @@ using (var context = new MessageLoggerContext())
         using (var context = new MessageLoggerContext())
         {
             var DbUser = context.Users.Find(user.Id);
-            //if (userInput != "commands".ToLower() || userInput != "common words" || userInput != "my messages" || userInput != "user message count")
-            //{
-            //    query.ConstantInfo(context, DbUser);//CONSTANT INFO METHOD
-            //}
-            //else if (userInput == "commands".ToLower() || userInput == "common words" || userInput == "my messages" || userInput == "user message count")
-            //{
-            //    query.Commands(userInput, query, DbUser, context);
-            //}
+            var ListOfUsernames = new List<string>();
+            ListOfUsernames = DbUser.UsernameList(context);
 
+            //var singleUser = query.CommonWord(context, DbUser, userInput);
             if (userInput == "commands".ToLower() || userInput == "common words" || userInput == "my messages" || userInput == "user message count")
             {
                 query.Commands(userInput, query, DbUser, context);
+
             }
             else
             {
@@ -66,10 +62,9 @@ using (var context = new MessageLoggerContext())
         }
 
         Console.Write("Add a message: ");
-        
         userInput = Console.ReadLine();
 
-        using (var context = new MessageLoggerContext())//ensures no "quit" or "log out" message is added (Methodize)
+        using (var context = new MessageLoggerContext())
         {
             if (userInput != "quit".ToLower() && userInput != "log out".ToLower() && userInput != "c".ToLower() && userInput != "command".ToLower() && userInput != "commands".ToLower() && userInput != "common words".ToLower() && userInput != "my messages".ToLower() && userInput != "user message count".ToLower())
             {
@@ -132,11 +127,12 @@ using (var context = new MessageLoggerContext())
 
 //move if(user != null){} into NewUser()?
 
-//Third Iteration Methods:  CommonWord(User? user), MessageByHour()
+//Third Iteration Methods: MessageByHour()
 
     //TESTS FOR ALL METHODS!
 
 
 //known bugs: if you type "commands" before selecting 'y' or 'n' for having a profile, the program ends.
     //if you type "commands" as the first message immediately after signing in to an existing account, nothing happens, you are asked again for an input.
-    //'user message count' displays correct (but double or triple .count)
+    //common words command runs twice.
+    //upon logging in to an already created profile, your
